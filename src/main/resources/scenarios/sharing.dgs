@@ -1,0 +1,16 @@
+DGS004
+test 0 0
+
+an 1 x:10.500702 y:52.251980 num_servers_node:1 server_capacity:290
+an 2 x:10.513182 y:52.258949 num_servers_node:1 server_capacity:380
+an 3 x:10.525307 y:52.251980 num_servers_node:1 server_capacity:290
+an 4 x:10.500702 y:52.267949 num_servers_node:1 server_capacity:120
+an 5 x:10.525307 y:52.267949 num_servers_node:1 server_capacity:120
+an 6 x:10.513182 y:52.248980 num_servers_node:1 server_capacity:90
+
+ae 12 1 > 2
+ae 23 2 > 3 
+ae 42 4 > 2 
+ae 25 2 > 5 
+ae 16 1 > 6
+ae 63 6 > 3
