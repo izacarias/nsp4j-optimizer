@@ -75,6 +75,10 @@ public class Definitions {
    public static final String gSVXY = "gSVXY";
    public static final String hSVP = "hSVP";
 
+   // VNF sharing variables
+   public static final String f2XSV = "f2XSV";
+   public static final String f2XV = "f2XV";
+
    // general constraints
    public static final String RP1 = "RP1";
    public static final String RP2 = "RP2";
@@ -98,6 +102,10 @@ public class Definitions {
    public static final String FORCE_SRC_DST = "force_src_dst";
    public static final String CONST_REP = "const_rep";
 
+   // VNF Sharing constraints
+   public static final String SII1 = "SII1";
+   public static final String SII2 = "SII2";
+
    // service parameters
    public static final String SERVICE_MIN_PATHS = "min_paths";
    public static final String SERVICE_MAX_PATHS = "max_paths";
@@ -107,6 +115,7 @@ public class Definitions {
 
    // function parameters
    public static final String FUNCTION_REPLICABLE = "replicable";
+   public static final String FUNCTION_SHAREABLE = "shareable";
    public static final String FUNCTION_LOAD_RATIO = "load_ratio";
    public static final String FUNCTION_OVERHEAD_RATIO = "overhead_ratio";
    public static final String FUNCTION_SYNC_LOAD_RATIO = "sync_load";

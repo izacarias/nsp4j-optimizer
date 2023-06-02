@@ -77,6 +77,10 @@ public class SpecificConstraints {
          if (sc.getConstraints().containsKey(PATHS_SERVERS_CLOUD))
             if (sc.getConstraints().get(PATHS_SERVERS_CLOUD))
                constraintPathsServersCloud();
+         if (sc.getConstraints().get(SII1))
+            SII1();
+         if (sc.getConstraints().get(SII2))
+            SII2();
 
          // create link and server utilization expressions
          GRBLinExpr[] luExpr = createLinkUtilizationExpr(linkLoadExpr);
@@ -597,5 +601,53 @@ public class SpecificConstraints {
          e.printStackTrace();
       }
       return costFunctions;
+   }
+
+   // Controls which VNFs can be shared
+   private void SII1() throws GRBException {
+      for (int x = 0; x < pm.getServers().size(); x++) {
+         for (int s = 0; s < pm.getServices().size(); s++) {
+            for (int f = 0; f < pm.getServices().get(s).getFunctions().size(); f++) {
+               if ((boolean) pm.getServices().get(s).getFunctions().get(f).getAttribute(FUNCTION_SHAREABLE)) {
+                  GRBLinExpr expr = new GRBLinExpr();
+                  GRBLinExpr expr2 = new GRBLinExpr();
+                  for (int v = 0; v < pm.getServices().get(s).getFunctions().size(); v++) {
+                     if ((boolean) pm.getServices().get(s).getFunctions().get(v).getAttribute(FUNCTION_SHAREABLE) && 
+                         (pm.getServices().get(s).getFunctions().get(v).getType() == pm.getFunctionTypes().get(f).getType()) ) {
+                        expr.addTerm(1.0 / 100, vars.fXSV[x][s][v]);
+                        expr2.addTerm(1.0, vars.fXSV[x][s][v]);
+                     }
+                  }
+                  modelLP.getGrbModel().addConstr(vars.f2XSV[x][s][f], GRB.GREATER_EQUAL, expr,
+                        SII1 + "[x][s][f] --> " + "[" + x + "][" + s + "][" + f + "]");
+                  modelLP.getGrbModel().addConstr(vars.f2XSV[x][s][f], GRB.LESS_EQUAL, expr2,
+                        SII1 + "[x][s][f] --> " + "[" + x + "][" + s + "][" + f + "]");
+               }
+            }
+         }
+      }
+   }
+
+   // Counts the number of shared VNFs by its type / per server
+   private void SII2() throws GRBException {
+      final double bigM = 10000.0;
+      for (int x = 0; x < pm.getServers().size(); x++) {
+         for (int f = 0; f < pm.getFunctionTypes().size(); f++) {
+            if ((Boolean) pm.getFunctionTypes().get(f).getAttribute(FUNCTION_SHAREABLE)) {
+               GRBLinExpr expr = new GRBLinExpr();
+               GRBLinExpr expr2 = new GRBLinExpr();
+
+               for (int s = 0; s < pm.getServices().size(); s++) {
+                  expr.addTerm(1.0 / bigM, vars.f2XSV[x][s][f]);
+                  expr2.addTerm(1.0, vars.f2XSV[x][s][f]);
+               }
+
+               modelLP.getGrbModel().addConstr(expr, GRB.LESS_EQUAL, vars.f2XV[x][f],
+                     SII2 + "_1[x][v] --> " + "[" + x + "][" + f + "]");
+               modelLP.getGrbModel().addConstr(expr2, GRB.GREATER_EQUAL, vars.f2XV[x][f],
+                     SII2 + "_2[x][v] --> " + "[" + x + "][" + f + "]");
+            }
+         }
+      }
    }
 }
