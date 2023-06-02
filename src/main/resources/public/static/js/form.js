@@ -164,6 +164,12 @@ function generateScenario() {
     // other
     var force_src_dst = $("#force-src-dst").is(":checked");
     var const_rep = $("#const-rep").is(":checked");
+    // Sharing
+    var SII1 = $("#SII1").is(":checked");
+    var SII2 = $("#SII2").is(":checked");
+    // Service Isolation
+    var VAI2 = $("#VAI2").is(":checked");
+    var SICB = $("#SICB").is(":checked");
     var scenario = JSON.stringify({
         inputFileName: inputFileName,
         objFunc: objFunc,
@@ -188,9 +194,12 @@ function generateScenario() {
             set_init_plc: set_init_plc,
             // other
             force_src_dst: force_src_dst,
-            const_rep: const_rep
+            const_rep: const_rep,
+            SII1: SII1,
+            SII2: SII2,
+            VAI2: VAI2,
+            SICB: SICB,
         }
     });
     return scenario;
 }
-
