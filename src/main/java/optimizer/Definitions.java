@@ -51,6 +51,7 @@ public class Definitions {
    public static final String zSP = "zSP";
    public static final String zSPD = "zSPD";
    public static final String fX = "fX";
+   public static final String fXS = "fXS";
    public static final String fXSV = "fXSV";
    public static final String fXSVD = "fXSVD";
    public static final String uX = "uX";
@@ -105,6 +106,10 @@ public class Definitions {
    // VNF Sharing constraints
    public static final String SII1 = "SII1";
    public static final String SII2 = "SII2";
+
+   // Service isolation
+   public static final String VAI2 = "VAI2";
+   public static final String SICB = "SICB";
 
    // service parameters
    public static final String SERVICE_MIN_PATHS = "min_paths";

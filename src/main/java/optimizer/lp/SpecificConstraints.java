@@ -81,6 +81,14 @@ public class SpecificConstraints {
             SII1();
          if (sc.getConstraints().get(SII2))
             SII2();
+         // Service isolation constraints
+         if (sc.getConstraints().get(VAI2)) {
+            VAI2();
+         }
+         if (sc.getConstraints().get(SICB)) {
+            SICB();
+         }
+         
 
          // create link and server utilization expressions
          GRBLinExpr[] luExpr = createLinkUtilizationExpr(linkLoadExpr);
@@ -177,18 +185,32 @@ public class SpecificConstraints {
       GRBLinExpr[] expressions = new GRBLinExpr[pm.getServers().size()];
       for (int x = 0; x < pm.getServers().size(); x++) {
          GRBLinExpr expr = new GRBLinExpr();
-         for (int s = 0; s < pm.getServices().size(); s++)
+         for (int s = 0; s < pm.getServices().size(); s++) {
             for (int v = 0; v < pm.getServices().get(s).getFunctions().size(); v++) {
                Function function = pm.getServices().get(s).getFunctions().get(v);
-               for (int d = 0; d < pm.getServices().get(s).getTrafficFlow().getDemands().size(); d++)
-                  if (pm.getServices().get(s).getTrafficFlow().getAux().get(d))
+               for (int d = 0; d < pm.getServices().get(s).getTrafficFlow().getDemands().size(); d++) {
+                  if (pm.getServices().get(s).getTrafficFlow().getAux().get(d)) {
                      expr.addTerm((pm.getServices().get(s).getTrafficFlow().getDemands().get(d)
                            * (double) function.getAttribute(FUNCTION_LOAD_RATIO)), vars.fXSVD[x][s][v][d]);
+                  }
+               }
+               if (!(Boolean) function.getAttribute(FUNCTION_SHAREABLE)) {
+                  double overhead = (double) function.getAttribute(FUNCTION_OVERHEAD_RATIO)
+                        * (int) function.getAttribute(FUNCTION_MAX_BW) * (int) function.getAttribute(FUNCTION_MAX_DEM)
+                        * (double) function.getAttribute(FUNCTION_LOAD_RATIO);
+                  expr.addTerm(overhead, vars.fXSV[x][s][v]);
+               }
+            }
+         }
+         for (int f = 0; f < pm.getFunctionTypes().size(); f++) {
+            Function function = pm.getFunctionTypes().get(f);
+            if ((Boolean) function.getAttribute(FUNCTION_SHAREABLE)) {
                double overhead = (double) function.getAttribute(FUNCTION_OVERHEAD_RATIO)
                      * (int) function.getAttribute(FUNCTION_MAX_BW) * (int) function.getAttribute(FUNCTION_MAX_DEM)
                      * (double) function.getAttribute(FUNCTION_LOAD_RATIO);
-               expr.addTerm(overhead, vars.fXSV[x][s][v]);
+               expr.addTerm(overhead, vars.f2XV[x][f]);
             }
+         }
          expressions[x] = expr;
       }
       return expressions;
@@ -647,6 +669,36 @@ public class SpecificConstraints {
                modelLP.getGrbModel().addConstr(expr2, GRB.GREATER_EQUAL, vars.f2XV[x][f],
                      SII2 + "_2[x][v] --> " + "[" + x + "][" + f + "]");
             }
+         }
+      }
+   }
+
+   // checks if a service is using a server
+   private void VAI2() throws GRBException {
+      for (int s = 0; s < pm.getServices().size(); s++) {
+         for (int x = 0; x < pm.getServers().size(); x++) {
+            GRBLinExpr expr = new GRBLinExpr();
+            GRBLinExpr expr2 = new GRBLinExpr();
+            for (int v = 0; v < pm.getServices().get(s).getFunctions().size(); v++) {
+               expr.addTerm(1.0, vars.fXSV[x][s][v]);
+               expr2.addTerm(1.0 / pm.getServices().get(s).getFunctions().size(), vars.fXSV[x][s][v]);
+            }
+            modelLP.getGrbModel().addConstr(expr, GRB.GREATER_EQUAL, vars.fXS[x][s], 
+               VAI2 + "[s][x] --> " + "[" + s + "][" + x + "]");
+            modelLP.getGrbModel().addConstr(expr2, GRB.LESS_EQUAL, vars.fXS[x][s], 
+               VAI2 + "[s][x] --> " + "[" + s + "][" + x + "]");
+         }
+      }
+   }
+
+   //one function per server
+   private void SICB() throws GRBException {
+      for (int x = 0; x < pm.getServers().size(); x++) {
+         GRBLinExpr expr = new GRBLinExpr();
+         for (int s = 0; s < pm.getServices().size(); s++) {
+            expr.addTerm(1.0, vars.fXS[x][s]);
+            modelLP.getGrbModel().addConstr(expr, GRB.LESS_EQUAL, 1,
+            SICB + "[x][s] -->" + "[" + x + "][" + s + "]");
          }
       }
    }

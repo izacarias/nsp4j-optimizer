@@ -38,6 +38,9 @@ public class VariablesLP {
    public GRBVar[][][][] gSVXY; // binary, aux synchronization traffic
    public GRBVar[][][] hSVP; // binary, traffic synchronization
 
+   // model specific variables for service isolation in server
+   public GRBVar[][] fXS; //binary, 1 if a service chain S uses server X
+
    // model specific variables for VNF sharing
    public GRBVar[][][] f2XSV;
    public GRBVar[][] f2XV;
@@ -48,6 +51,7 @@ public class VariablesLP {
          zSP_init(pm, model, initialSolution);
          zSPD_init(pm, model, initialSolution);
          fX_init(pm, model, initialSolution);
+         fXS_init(pm, model, initialSolution);
          fXSV_init(pm, model, initialSolution);
          fXSVD_init(pm, model, initialSolution);
          uL_init(pm, model, initialSolution);
@@ -154,6 +158,20 @@ public class VariablesLP {
             fX[x] = initialSolution.getVarByName(varName);
          else
             fX[x] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, varName);
+      }
+   }
+
+   private void fXS_init(Parameters pm, GRBModel model, GRBModel initialSolution) throws GRBException {
+      fXS = new GRBVar[pm.getServers().size()][pm.getServices().size()];
+      for (int x = 0; x < pm.getServers().size(); x++) {
+         for (int s = 0; s < pm.getServices().size(); s++) {
+            String varName = Definitions.fXS + "[" + x + "][" + s + "]";
+            if (initialSolution != null){
+               fXS[x][s] = initialSolution.getVarByName(varName);
+            } else {
+               fXS[x][s] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, varName);
+            }
+         }
       }
    }
 
