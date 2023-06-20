@@ -91,13 +91,15 @@ public class ModelLP {
       for (int x = 0; x < pm.getServers().size(); x++) {
          for (int s = 0; s < pm.getServices().size(); s++) {
             for (int v = 0; v < pm.getServices().get(s).getFunctions().size(); v++) {
-               if (!(Boolean)pm.getServices().get(s).getFunctions().get(v).getAttribute(FUNCTION_SHAREABLE)){
+               if (!((Boolean)pm.getServices().get(s).getFunctions().get(v).getAttribute(FUNCTION_SHAREABLE) && pm.getModelIsSharing())){
                   expr.addTerm(weight, vars.fXSV[x][s][v]);
                }
             }
          }
-         for (int f = 0; f < pm.getFunctionTypes().size(); f++) {
-            expr.addTerm(weight, vars.f2XV[x][f]);
+         if (pm.getModelIsSharing()) {
+            for (int f = 0; f < pm.getFunctionTypes().size(); f++) {
+               expr.addTerm(weight, vars.f2XV[x][f]);
+            }
          }
       }
       return expr;

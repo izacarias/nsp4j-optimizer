@@ -81,6 +81,9 @@ public class SpecificConstraints {
             SII1();
          if (sc.getConstraints().get(SII2))
             SII2();
+         if (sc.getConstraints().get(SII1) && sc.getConstraints().get(SII2)){
+            pm.setModelIsSharing(true);
+         }
          // Service isolation constraints
          if (sc.getConstraints().get(VAI2)) {
             VAI2();

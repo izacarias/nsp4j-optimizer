@@ -47,6 +47,8 @@ public class Parameters {
    private String graphName;
    private Random rnd;
 
+   private Boolean modelIsSharing = false;
+
    public Parameters() {
       nodes = new ArrayList<>();
       edges = new ArrayList<>();
@@ -354,6 +356,10 @@ public class Parameters {
       this.trafficFlows = trafficFlows;
    }
 
+   public void setModelIsSharing(Boolean sharing){
+      this.modelIsSharing = sharing;
+   }
+
    public List<Path> getPaths() {
       return paths;
    }
@@ -392,5 +398,9 @@ public class Parameters {
 
    public Map<String, Object> getGlobal() {
       return global;
+   }
+
+   public Boolean getModelIsSharing(){
+      return this.modelIsSharing;
    }
 }
