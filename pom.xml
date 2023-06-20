@@ -21,6 +21,7 @@
         <dl4j.version>0.9.1</dl4j.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
+        <maven.plugin.validation>BRIEF</maven.plugin.validation>
     </properties>
 
     <dependencies>
