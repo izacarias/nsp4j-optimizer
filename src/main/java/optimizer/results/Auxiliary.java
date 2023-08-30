@@ -194,6 +194,26 @@ public class Auxiliary {
       return convertedVar;
    }
 
+   public static boolean[][][][][] grbVarsToBooleans(GRBVar[][][][][] var) throws GRBException {
+      boolean[][][][][] convertedVar;
+      if (var.length > 0)
+         convertedVar = new boolean[var.length][var[0].length][var[0][0].length][var[0][0][0].length][var[0][0][0][0].length];
+      else
+         convertedVar = new boolean[0][0][0][0][0];
+      for (int i = 0; i < var.length; i++)
+         for (int j = 0; j < var[i].length; j++)
+            for (int k = 0; k < var[i][j].length; k++)
+               for (int l = 0; l < var[i][j][k].length; l++) {
+                  for (int m = 0; m < var[i][j][k][l].length; m++) {
+                     if (var[i][j][k][l][m] == null)
+                        continue;
+                     if (roundDouble(var[i][j][k][l][m].get(GRB.DoubleAttr.X), 1) == 1.0)
+                        convertedVar[i][j][k][l][m] = true;
+                  }
+               }
+      return convertedVar;
+   }
+
    public static double[] grbVarsToDoubles(GRBVar[] var) throws GRBException {
       double[] convertedVar = new double[var.length];
       for (int i = 0; i < var.length; i++)
