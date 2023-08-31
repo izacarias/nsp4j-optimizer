@@ -37,7 +37,7 @@ public class VariablesLP {
    public GRBVar[][][][] dSVXD; // continuous, service delay variable
    public GRBVar[][][][] gSVXY; // binary, aux synchronization traffic
    public GRBVar[][][] hSVP; // binary, traffic synchronization
-
+   public GRBVar[][][][][] qSDPNM; // ignores propagation delay after last VNF
    public VariablesLP(Parameters pm, GRBModel model, Scenario sc, GRBModel initialSolution) {
       try {
 
@@ -106,6 +106,9 @@ public class VariablesLP {
          // model constrainst max service delay
          if (sc.getConstraints().get(MAX_SERV_DELAY))
             dSVXD_init(pm, model, initialSolution);
+
+         if (sc.getConstraints().get(CONST_VLD))
+            qSDPNM_init(pm, model, initialSolution);
 
          model.update();
       } catch (Exception ignored) {
@@ -350,5 +353,25 @@ public class VariablesLP {
                   else
                      dSVXD[s][v][x][d] = model.addVar(0.0, GRB.INFINITY, 0.0, GRB.CONTINUOUS, varName);
                }
+   }
+
+   private void qSDPNM_init(Parameters pm, GRBModel model, GRBModel initialSolution) throws GRBException {
+      qSDPNM = new GRBVar[pm.getServices().size()][pm.getDemandsTrafficFlow()][pm.getPaths().size()][pm.getNodes().size()][pm.getNodes().size()];
+      for (int s = 0; s < pm.getServices().size(); s++) {
+         for (int d = 0; d < pm.getServices().get(s).getTrafficFlow().getDemands().size(); d++) {
+            for (int p = 0; p < pm.getPaths().size(); p++) {
+               for (int n = 0; n < pm.getNodes().size(); n++) {
+                  for (int m = 0; m < pm.getNodes().size(); m++) {
+                     String varName = Definitions.qSDPNM + "[" + s + "]" + "[" + d + "]" + "[" + p + "]" + "[" + n + "]" + "[" + m + "]";
+                     if(initialSolution != null) {
+                        qSDPNM[s][d][p][n][m] = initialSolution.getVarByName(varName);
+                     } else {
+                        qSDPNM[s][d][p][n][m] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, varName);
+                     }
+                  }
+               }
+            }
+         }
+      }
    }
 }

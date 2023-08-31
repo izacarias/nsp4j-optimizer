@@ -7,6 +7,7 @@ import optimizer.elements.*;
 import optimizer.gui.GraphData;
 import optimizer.gui.Scenario;
 import org.graphstream.graph.Edge;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -317,8 +318,24 @@ public class Results {
                               }
 
                      // add propagation delay
-                     for (Edge link : path.getEdgePath())
+                     if(sc.getConstraints().get(CONST_VLD)){
+                        boolean[][][][][] qSDPNMVar = (boolean[][][][][]) rawVariables.get(qSDPNM);
+                        for (int n = 0; n < path.size() -1; n++) {
+                           int m = n + 1;
+                           Node nodeN = pm.getNodes().get(n);
+                           Node nodeM = pm.getNodes().get(m);
+                           for (Edge link : path.getEdgePath()) {
+                              if ((link.getNode0().equals(nodeN)) && (link.getNode1().equals(nodeM))){
+                                 if (qSDPNMVar[s][d][p][n][m]){
+                                    serviceDelay += (double) link.getAttribute(LINK_DELAY) * 1000; // in ms
+                                 }                              
+                              }
+                           }
+                        }
+                     } else {
+                        for (Edge link : path.getEdgePath())
                         serviceDelay += (double) link.getAttribute(LINK_DELAY) * 1000; // in ms
+                     }
 
                      // add service downtime
                      if (initialPlacement != null)

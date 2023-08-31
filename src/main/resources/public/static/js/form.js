@@ -162,6 +162,7 @@ function generateScenario() {
     var single_path = $("#single-path").is(":checked");
     var set_init_plc = $("#set-init-plc").is(":checked");
     // other
+    var const_vld = $("#const-vld").is(":checked");
     var force_src = $("#force-src").is(":checked");
     var force_dst = $("#force-dst").is(":checked");
     var const_rep = $("#const-rep").is(":checked");
@@ -188,6 +189,7 @@ function generateScenario() {
             single_path: single_path,
             set_init_plc: set_init_plc,
             // other
+            const_vld: const_vld,
             force_src: force_src,
             force_dst: force_dst,
             const_rep: const_rep

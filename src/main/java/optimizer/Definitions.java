@@ -67,6 +67,7 @@ public class Definitions {
    public static final String oSV = "oSV";
    public static final String qSDP = "qSDP";
    public static final String ySDP = "ySDP";
+   public static final String qSDPNM = "qSDPNM";
 
    // service delay variables
    public static final String dSVXD = "dSVXD";
@@ -98,6 +99,7 @@ public class Definitions {
    public static final String FORCE_SRC = "force_src";
    public static final String FORCE_DST = "force_dst";
    public static final String CONST_REP = "const_rep";
+   public static final String CONST_VLD = "const_vld";
 
    // service parameters
    public static final String SERVICE_MIN_PATHS = "min_paths";
