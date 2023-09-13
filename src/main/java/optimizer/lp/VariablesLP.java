@@ -398,6 +398,10 @@ public class VariablesLP {
                      f2XSV[x][s][v] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, varName);
                   }
                // }
+               }
+         }
+      }
+   }
 
    private void qSDPNM_init(Parameters pm, GRBModel model, GRBModel initialSolution) throws GRBException {
       qSDPNM = new GRBVar[pm.getServices().size()][pm.getDemandsTrafficFlow()][pm.getPaths().size()][pm.getNodes().size()][pm.getNodes().size()];
