@@ -195,8 +195,6 @@ function generateScenario() {
             single_path: single_path,
             set_init_plc: set_init_plc,
             // other
-
-            force_src_dst: force_src_dst,
             const_rep: const_rep,
             SII1: SII1,
             SII2: SII2,
