@@ -45,6 +45,7 @@ public class VariablesLP {
    public GRBVar[][][] f2XSV;
    public GRBVar[][] f2XV;
 
+   public GRBVar[][][][][] qSDPNM; // ignores propagation delay after last VNF
    public VariablesLP(Parameters pm, GRBModel model, Scenario sc, GRBModel initialSolution) {
       try {
 
@@ -118,6 +119,10 @@ public class VariablesLP {
          // Variables for VNF sharing
          f2XSV_init(pm, model, initialSolution);
          f2XV_init(pm, model, initialSolution);
+
+         if (sc.getConstraints().get(CONST_VLD))
+            qSDPNM_init(pm, model, initialSolution);
+
 
          model.update();
       } catch (Exception ignored) {
@@ -379,6 +384,7 @@ public class VariablesLP {
                }
    }
 
+
    private void f2XSV_init(Parameters pm, GRBModel model, GRBModel initialSolution) throws GRBException {
       f2XSV = new GRBVar[pm.getServers().size()][pm.getServices().size()][pm.getServiceLength()];
       for (int x = 0; x < pm.getServers().size(); x++) {
@@ -392,10 +398,28 @@ public class VariablesLP {
                      f2XSV[x][s][v] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, varName);
                   }
                // }
+
+   private void qSDPNM_init(Parameters pm, GRBModel model, GRBModel initialSolution) throws GRBException {
+      qSDPNM = new GRBVar[pm.getServices().size()][pm.getDemandsTrafficFlow()][pm.getPaths().size()][pm.getNodes().size()][pm.getNodes().size()];
+      for (int s = 0; s < pm.getServices().size(); s++) {
+         for (int d = 0; d < pm.getServices().get(s).getTrafficFlow().getDemands().size(); d++) {
+            for (int p = 0; p < pm.getPaths().size(); p++) {
+               for (int n = 0; n < pm.getNodes().size(); n++) {
+                  for (int m = 0; m < pm.getNodes().size(); m++) {
+                     String varName = Definitions.qSDPNM + "[" + s + "]" + "[" + d + "]" + "[" + p + "]" + "[" + n + "]" + "[" + m + "]";
+                     if(initialSolution != null) {
+                        qSDPNM[s][d][p][n][m] = initialSolution.getVarByName(varName);
+                     } else {
+                        qSDPNM[s][d][p][n][m] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, varName);
+                     }
+                  }
+               }
+
             }
          }
       }
    }
+
 
    private void f2XV_init(Parameters pm, GRBModel model, GRBModel initialSolution) throws GRBException {
       f2XV = new GRBVar[pm.getServers().size()][pm.getFunctionTypes().size()];
@@ -412,4 +436,5 @@ public class VariablesLP {
          }
       }
    }
+
 }

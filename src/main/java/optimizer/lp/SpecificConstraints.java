@@ -70,8 +70,10 @@ public class SpecificConstraints {
             singlePath();
          if (sc.getConstraints().get(SET_INIT_PLC))
             setInitPlc(initialPlacement);
-         if (sc.getConstraints().get(FORCE_SRC_DST))
-            forceSrcDst();
+         if (sc.getConstraints().get(FORCE_SRC))
+            forceSrc();
+         if (sc.getConstraints().get(FORCE_DST))
+            forceDst();
          if (sc.getConstraints().get(CONST_REP))
             constRep();
          if (sc.getConstraints().containsKey(PATHS_SERVERS_CLOUD))
@@ -92,6 +94,11 @@ public class SpecificConstraints {
             SICB();
          }
          
+
+         // calculate variable propagation delay
+         if (sc.getConstraints().get(CONST_VLD)){
+            constVariablePropagationDelay();
+         }
 
          // create link and server utilization expressions
          GRBLinExpr[] luExpr = createLinkUtilizationExpr(linkLoadExpr);
@@ -381,7 +388,8 @@ public class SpecificConstraints {
 
    private GRBLinExpr serviceDelayExpr(int s, int p, int d, boolean[][][] initialPlacement) throws GRBException {
       GRBLinExpr serviceDelayExpr = new GRBLinExpr();
-      serviceDelayExpr.add(propagationDelayExpr(s, p)); // adds propagation delay in ms
+      // serviceDelayExpr.add(propagationDelayExpr(s, p)); // adds propagation delay in ms
+      serviceDelayExpr.add(propagationDelayExpr(s, p, d)); // adds propagation delay in ms
       serviceDelayExpr.add(processingDelayExpr(s, p, d)); // adds processing delay in ms
       if (initialPlacement != null)
          serviceDelayExpr.add(migrationDelayExpr(initialPlacement, s)); // adds migration delay in ms
@@ -442,6 +450,23 @@ public class SpecificConstraints {
       for (Edge link : path.getEdgePath())
          pathDelay += (double) link.getAttribute(LINK_DELAY) * 1000; // from sec to ms
       linkDelayExpr.addConstant(pathDelay);
+      return linkDelayExpr;
+   }
+
+   private GRBLinExpr propagationDelayExpr(int s, int p, int d) {
+      GRBLinExpr linkDelayExpr = new GRBLinExpr();
+      Path path = pm.getServices().get(s).getTrafficFlow().getPaths().get(p);
+      double pathDelay = 0.0;
+      for (int n = 0; n < path.size() -1; n++) {
+         int m = n + 1;
+         Node nodeN = pm.getNodes().get(n);
+         Node nodeM = pm.getNodes().get(m);
+         for (Edge link : path.getEdgePath()) {
+            if ((link.getNode0().equals(nodeN)) && (link.getNode1().equals(nodeM))){
+               linkDelayExpr.addTerm((double) link.getAttribute(LINK_DELAY) * 1000, vars.qSDPNM[s][d][p][n][m]);
+            }
+         }
+      }
       return linkDelayExpr;
    }
 
@@ -582,21 +607,29 @@ public class SpecificConstraints {
    }
 
    // Fix src-dst functions
-   private void forceSrcDst() throws GRBException {
+   private void forceSrc() throws GRBException {
       for (int s = 0; s < pm.getServices().size(); s++) {
          Path path = pm.getServices().get(s).getTrafficFlow().getPaths().get(0);
          Node srcNode = path.getNodePath().get(0);
-         Node dstNode = path.getNodePath().get(path.getNodePath().size() - 1);
          GRBLinExpr exprSrc = new GRBLinExpr();
-         GRBLinExpr exprDst = new GRBLinExpr();
          for (int x = 0; x < pm.getServers().size(); x++) {
             if (pm.getServers().get(x).getParent().getId().equals(srcNode.getId()))
                exprSrc.addTerm(1.0, vars.fXSV[x][s][0]);
+         }
+         modelLP.getGrbModel().addConstr(exprSrc, GRB.EQUAL, 1.0, FORCE_SRC);
+      }
+   }
+
+   private void forceDst() throws GRBException {
+      for (int s = 0; s < pm.getServices().size(); s++) {
+         Path path = pm.getServices().get(s).getTrafficFlow().getPaths().get(0);
+         Node dstNode = path.getNodePath().get(path.getNodePath().size() - 1);
+         GRBLinExpr exprDst = new GRBLinExpr();
+         for (int x = 0; x < pm.getServers().size(); x++) {
             if (pm.getServers().get(x).getParent().getId().equals(dstNode.getId()))
                exprDst.addTerm(1.0, vars.fXSV[x][s][pm.getServices().get(s).getFunctions().size() - 1]);
          }
-         modelLP.getGrbModel().addConstr(exprSrc, GRB.EQUAL, 1.0, FORCE_SRC_DST);
-         modelLP.getGrbModel().addConstr(exprDst, GRB.EQUAL, 1.0, FORCE_SRC_DST);
+         modelLP.getGrbModel().addConstr(exprDst, GRB.EQUAL, 1.0, FORCE_DST);
       }
    }
 
@@ -610,6 +643,39 @@ public class SpecificConstraints {
          int maxPaths = (int) pm.getServices().get(s).getAttribute(SERVICE_MAX_PATHS);
          modelLP.getGrbModel().addConstr(expr, GRB.GREATER_EQUAL, minPaths, CONST_REP);
          modelLP.getGrbModel().addConstr(expr, GRB.LESS_EQUAL, maxPaths, CONST_REP);
+      }
+   }
+
+   private void constVariablePropagationDelay() throws GRBException {
+      for (int s = 0; s < pm.getServices().size(); s++) {
+         Service se = pm.getServices().get(s);
+         for (int d = 0; d < se.getTrafficFlow().getDemands().size(); d++){
+            for (int p = 0; p < se.getTrafficFlow().getPaths().size(); p++){
+               for (int n = 0; n < se.getTrafficFlow().getPaths().get(p).size() -1; n++) {
+                  int m = n +1;
+                  GRBLinExpr expr = new GRBLinExpr();
+                  GRBLinExpr expr2 = new GRBLinExpr();
+                  for (int m2 = m; m2 < se.getTrafficFlow().getPaths().get(p).size(); m2++) {
+                     Node nodeM = se.getTrafficFlow().getPaths().get(p).getNodePath().get(m2);
+                     for (int x = 0; x < pm.getServers().size(); x++) {
+                        if (pm.getServers().get(x).getParent().equals(nodeM)){
+                           for (int v = 0; v < se.getFunctions().size(); v++) {
+                              expr.addTerm(1.0/10000.0, vars.fXSVD[x][s][v][d]);
+                              expr2.addTerm(1.0, vars.fXSVD[x][s][v][d]);
+                           }
+                        }
+                     }
+                  }
+                  // add the constraint
+                  modelLP.getGrbModel().addConstr(expr, GRB.LESS_EQUAL, vars.qSDPNM[s][d][p][n][m], 
+                     CONST_VLD + "[s][d][p][n][m] -->" + 
+                     "[" + s + "]" + "[" + d + "]" + "[" + p + "]" + "[" + n + "]" + "[" + m + "]");
+                  modelLP.getGrbModel().addConstr(expr2, GRB.GREATER_EQUAL, vars.qSDPNM[s][d][p][n][m], 
+                     CONST_VLD + "[s][d][p][n][m] -->" + 
+                     "[" + s + "]" + "[" + d + "]" + "[" + p + "]" + "[" + n + "]" + "[" + m + "]");  
+               }
+            }
+         }
       }
    }
 

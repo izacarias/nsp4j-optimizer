@@ -162,7 +162,9 @@ function generateScenario() {
     var single_path = $("#single-path").is(":checked");
     var set_init_plc = $("#set-init-plc").is(":checked");
     // other
-    var force_src_dst = $("#force-src-dst").is(":checked");
+    var const_vld = $("#const-vld").is(":checked");
+    var force_src = $("#force-src").is(":checked");
+    var force_dst = $("#force-dst").is(":checked");
     var const_rep = $("#const-rep").is(":checked");
     // Sharing
     var SII1 = $("#SII1").is(":checked");
@@ -193,12 +195,18 @@ function generateScenario() {
             single_path: single_path,
             set_init_plc: set_init_plc,
             // other
+
             force_src_dst: force_src_dst,
             const_rep: const_rep,
             SII1: SII1,
             SII2: SII2,
             VAI2: VAI2,
             SICB: SICB,
+            const_vld: const_vld,
+            force_src: force_src,
+            force_dst: force_dst,
+            const_rep: const_rep
+
         }
     });
     return scenario;
