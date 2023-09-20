@@ -386,19 +386,19 @@ public class VariablesLP {
 
 
    private void f2XSV_init(Parameters pm, GRBModel model, GRBModel initialSolution) throws GRBException {
-      f2XSV = new GRBVar[pm.getServers().size()][pm.getServices().size()][pm.getServiceLength()];
+      f2XSV = new GRBVar[pm.getServers().size()][pm.getServices().size()][pm.getFunctionTypes().size()];
       for (int x = 0; x < pm.getServers().size(); x++) {
          for (int s = 0; s < pm.getServices().size(); s++){
-            for (int v = 0; v < pm.getServices().get(s).getFunctions().size(); v++){
+            for (int f = 0; f < pm.getFunctionTypes().size(); f++){
                // if ((Boolean) pm.getServices().get(s).getFunctions().get(v).getAttribute(FUNCTION_SHAREABLE)){
-                  String varName = Definitions.f2XSV + "[" + x + "][" + s + "][" + v + "]";
+                  String varName = Definitions.f2XSV + "[" + x + "][" + s + "][" + f + "]";
                   if (initialSolution != null){
-                     f2XSV[x][s][v] = initialSolution.getVarByName(varName);
+                     f2XSV[x][s][f] = initialSolution.getVarByName(varName);
                   } else {
-                     f2XSV[x][s][v] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, varName);
+                     f2XSV[x][s][f] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, varName);
                   }
                // }
-               }
+            }
          }
       }
    }
