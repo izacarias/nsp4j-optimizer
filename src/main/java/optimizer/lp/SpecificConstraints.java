@@ -58,6 +58,10 @@ public class SpecificConstraints {
             qosPenalties(initialPlacement);
 
          // rest of specific constraints
+         // this flag is used in MAX_SERV_DELAY, therefore it must be
+         // set before that constraint
+         pm.setVariablePropagationDelay(sc.getConstraints().get(CONST_VLD));
+         
          if (sc.getConstraints().get(SYNC_TRAFFIC))
             syncTraffic(linkLoadExpr);
          if (sc.getConstraints().get(MAX_SERV_DELAY))
@@ -93,10 +97,10 @@ public class SpecificConstraints {
          if (sc.getConstraints().get(SICB)) {
             SICB();
          }
-         
 
          // calculate variable propagation delay
          if (sc.getConstraints().get(CONST_VLD)){
+            pm.setVariablePropagationDelay(true);
             constVariablePropagationDelay();
          }
 
@@ -388,8 +392,11 @@ public class SpecificConstraints {
 
    private GRBLinExpr serviceDelayExpr(int s, int p, int d, boolean[][][] initialPlacement) throws GRBException {
       GRBLinExpr serviceDelayExpr = new GRBLinExpr();
-      // serviceDelayExpr.add(propagationDelayExpr(s, p)); // adds propagation delay in ms
-      serviceDelayExpr.add(propagationDelayExpr(s, p, d)); // adds propagation delay in ms
+      if (!pm.getVariablePropagationDelay()) {
+         serviceDelayExpr.add(propagationDelayExpr(s, p)); // adds propagation delay in ms
+      } else {
+         serviceDelayExpr.add(propagationDelayExpr(s, p, d)); // adds propagation delay in ms  
+      }
       serviceDelayExpr.add(processingDelayExpr(s, p, d)); // adds processing delay in ms
       if (initialPlacement != null)
          serviceDelayExpr.add(migrationDelayExpr(initialPlacement, s)); // adds migration delay in ms
@@ -456,7 +463,6 @@ public class SpecificConstraints {
    private GRBLinExpr propagationDelayExpr(int s, int p, int d) {
       GRBLinExpr linkDelayExpr = new GRBLinExpr();
       Path path = pm.getServices().get(s).getTrafficFlow().getPaths().get(p);
-      double pathDelay = 0.0;
       for (int n = 0; n < path.size() -1; n++) {
          int m = n + 1;
          Node nodeN = pm.getNodes().get(n);

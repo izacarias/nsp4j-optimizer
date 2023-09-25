@@ -48,6 +48,7 @@ public class Parameters {
    private Random rnd;
 
    private Boolean modelIsSharing = false;
+   private Boolean variablePropagationDelay = false;
 
    public Parameters() {
       nodes = new ArrayList<>();
@@ -364,6 +365,10 @@ public class Parameters {
       this.modelIsSharing = sharing;
    }
 
+   public void setVariablePropagationDelay(Boolean variablePropagationDelay){
+      this.variablePropagationDelay = variablePropagationDelay;
+   }
+
    public List<Path> getPaths() {
       return paths;
    }
@@ -406,5 +411,9 @@ public class Parameters {
 
    public Boolean getModelIsSharing(){
       return this.modelIsSharing;
+   }
+
+   public Boolean getVariablePropagationDelay(){
+      return this.variablePropagationDelay;
    }
 }

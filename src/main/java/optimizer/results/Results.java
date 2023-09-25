@@ -318,7 +318,7 @@ public class Results {
                               }
 
                      // add propagation delay
-                     if(sc.getConstraints().get(CONST_VLD)){
+                     if(pm.getVariablePropagationDelay()){
                         boolean[][][][][] qSDPNMVar = (boolean[][][][][]) rawVariables.get(qSDPNM);
                         for (int n = 0; n < path.size() -1; n++) {
                            int m = n + 1;
