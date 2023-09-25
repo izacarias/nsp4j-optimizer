@@ -1,0 +1,73 @@
+global: {
+  "gap": 0.0,
+  "x_scaling": 10000.0,
+  "y_scaling": 10000.0,
+  "server_capacity": 1000,
+  "link_capacity": 500,
+  "directed_edges": true,
+  "num_servers_node": 1,
+  "links_weight": 0.0,
+  "servers_weight": 1.0,
+  "link_capacity_types": [0, 100, 1000],
+  "overprovisioning_link_capacity": 1.0,
+  "server_capacity_types": [0, 100, 1000],
+  "overprovisioning_server_capacity": 1.0,
+  "server_types_costs": [5, 0],
+}
+service_chains:
+  - id: 1
+    chain: [1, 2, 3]
+    max_propagation_delay: 5.0 # ms
+    max_delay: 23.00 # ms
+    attributes: {
+      "min_paths": 1,
+      "max_paths": 3
+    }
+function_types: 
+  - type: 1 
+    attributes: {
+      "replicable": false,
+      "load_ratio": 0.5,
+      "overhead_ratio": 0.05,
+      # "sync_load": 0.1,
+      "max_dem": 10,
+      "max_bw": 100,
+      "process_traffic_delay": 3.0,
+      "process_delay": 5.0,
+      "min_process_delay": 2.0, 
+      "max_delay": 100.0,
+      "shareable": false,
+    }
+  - type: 2 
+    attributes: {
+      "replicable": true,
+      "load_ratio": 0.5,
+      "overhead_ratio": [0.0, 0.0],
+      # "sync_load": 0.1,
+      "max_dem": 10,
+      "max_bw": 100,
+      "process_traffic_delay": 3.0,
+      "process_delay": 5.0,
+      "min_process_delay": 2.0, 
+      "max_delay": 100.0,
+      "shareable": false,
+    }
+  - type: 3 
+    attributes: {
+      "replicable": false,
+      "load_ratio": 0.5,
+      "overhead_ratio": [0.0, 0.0],
+      # "sync_load": 0.1,
+      "max_dem": 10,
+      "max_bw": 100,
+      "process_traffic_delay": 3.0,
+      "process_delay": 5.0,
+      "min_process_delay": 2.0, 
+      "max_delay": 100.0,
+      "shareable": false,
+    }
+traffic_flows:
+  - demands: [300.00]
+    services: [1]
+    src: '1'
+    dst: '7'
