@@ -1,5 +1,8 @@
 package optimizer;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Random;
 
 import org.graphstream.graph.Node;
@@ -120,12 +123,39 @@ public class Manager {
          try {
             switch (sce.getName()) {
                case LP:
-                  readParameters(sce.getInputFileName());
-                  rm = new ResultsManager(pm.getGraphName());
-                  outputFileName = pm.getGraphName() + sce.getName() + sce.getObjFunc();
-                  LauncherLP.run(pm, sce, rm, null, null, outputFileName, true);
+                  // Check if a file called explist.txt exists in /src/main/resources
+                  java.nio.file.Path explistPath = Paths.get("src", "main", "resources", "scenarios", "explist.txt");
+                  if (Files.exists(explistPath)) {
+                     try {
+                        // open the file
+                        List<String> explistContent = Files.readAllLines(explistPath);
+                        // loop through all lines in the file to execute the experiments
+                        for (String expName : explistContent) {
+                           // ignore line starting by '#'
+                           printLog(log, INFO, "Start processing experiment " + expName);
+                           if(!expName.startsWith("#")){
+                              sce.setInputFileName(expName);
+                              readParameters(sce.getInputFileName());
+                              rm = new ResultsManager(pm.getGraphName());
+                              outputFileName = pm.getGraphName() + sce.getName() + sce.getObjFunc();
+                              LauncherLP.run(pm, sce, rm, null, null, outputFileName, true);
+                           } else {
+                              printLog(log, INFO, "Ignoring experiment " + expName);
+                           }
+                        }
+                     } catch (Exception e) {
+                        printLog(log, ERROR, "Could not open file " + explistPath.toString());
+                     }
+                  } else {
+                     // explist file was not found, continue with the WEB-UI workflow
+                     printLog(log, INFO, "File " + explistPath.toString() + " not found. Proceeding with Web-GUI workflow");
+                     readParameters(sce.getInputFileName());
+                     rm = new ResultsManager(pm.getGraphName());
+                     outputFileName = pm.getGraphName() + sce.getName() + sce.getObjFunc();
+                     LauncherLP.run(pm, sce, rm, null, null, outputFileName, true);
+                  }                  
                   break;
-
+                  
                case FF:
                   readParameters(sce.getInputFileName());
                   rm = new ResultsManager(pm.getGraphName());
