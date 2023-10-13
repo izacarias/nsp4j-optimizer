@@ -1,0 +1,101 @@
+# auxiliary parameters
+global: {
+  "gap": 0.0,
+  "offset_results": 0,
+  "x_scaling": 1200.0,
+  "y_scaling": 700.0,
+  "directed_edges": true,
+  "all_nodes_to_cloud": false,
+  "num_servers_node": 2,
+  "servers_weight": 95.0, # alpha
+  "links_weight": 5.0,   # beta
+}
+# service definitions
+service_chains:
+  # URLLC
+  - id: 1
+    chain: [1, 2, 3]
+    max_propagation_delay: 1.0 # ms
+    max_delay: 1.0 # ms
+  # eMBB
+  - id: 2
+    chain: [1, 2, 3]
+    max_propagation_delay: 4.0 # ms
+    max_delay: 4.0 # ms
+  # mMTC
+  - id: 3
+    chain: [1, 2, 3]
+    max_propagation_delay: 15.0 # ms
+    max_delay: 15.0 # ms
+
+# function definitions
+function_types: 
+  # RU - URLLC
+  - type: 1 # 0.8
+    attributes: {
+      "min_process_delay": 0.10, 
+      "load_ratio": [2.16, 2.16],
+      "process_delay": 3.36,
+      "replicable": false,
+      "overhead_ratio": [0.0, 0.0],
+      "max_dem": 1,
+      "max_bw": 200000,
+      "process_traffic_delay": 0.0,
+      "max_delay": 1000.0,
+      "shareable": false,
+    }
+  # DU - URLLC
+  - type: 2 # 0.4
+    attributes: {
+      "min_process_delay": 0.20, 
+      "load_ratio": [1.44, 1.44],
+      "process_delay": 2.24,
+      "replicable": false,
+      "overhead_ratio": [0.0, 0.0],
+      "max_dem": 1,
+      "max_bw": 200000,
+      "process_traffic_delay": 0.0,
+      "max_delay": 1000.0,
+      "shareable": false,
+    }
+  # CU - URLLC
+  - type: 3
+    attributes: {
+      "min_process_delay": 0.20, 
+      "load_ratio": [0.9, 0.9],
+      "process_delay": 1.4,
+      "replicable": false,
+      "overhead_ratio": [0.0, 0.0],
+      "max_dem": 1,
+      "max_bw": 200000,
+      "process_traffic_delay": 0.0,
+      "max_delay": 1000.0,
+      "shareable": false,
+    }
+# traffic flow definitions
+traffic_flows:
+  - demands: [50.0]
+    services: [1]
+    service_length: [0]
+    src: '26'
+    dst: '99'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '33'
+    dst: '99'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '48'
+    dst: '99'
+  - demands: [1000.0]
+    services: [1]
+    service_length: [0]
+    src: '42'
+    dst: '99'
+  - demands: [200.0]
+    services: [3]
+    service_length: [0]
+    src: '40'
+    dst: '99'

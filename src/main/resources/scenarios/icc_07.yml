@@ -1,0 +1,295 @@
+global: {
+  "gap": 0.03,
+  "offset_results": 0,
+  "x_scaling": 1200.0,
+  "y_scaling": 700.0,
+  "directed_edges": true,
+  "all_nodes_to_cloud": false,
+  "num_servers_node": 1,
+  "servers_weight": 100.0, # alpha
+  "links_weight": 0.0,   # beta
+  "server_capacity_types": [1, 50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000, 500000, 550000, 600000, 700000, 800000, 900000, 1000000],
+  "server_types_costs": [0, 7, 3, 1],
+  "link_capacity_types": [1, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000, 140000, 160000, 180000, 200000, 250000, 300000, 500000],
+  "overprovisioning_server_capacity": 1.1, 
+  "overprovisioning_link_capacity": 1.1,
+  "compute_iss": true,
+}
+# service definitions
+service_chains:
+  # URLLC
+  - id: 1
+    chain: [2, 3]
+    max_propagation_delay: 1.0 # ms
+    max_delay: 1.0 # ms
+  # eMBB
+  - id: 2
+    chain: [2, 4]
+    max_propagation_delay: 4.0 # ms
+    max_delay: 4.0 # ms
+  # mMTC
+  - id: 3
+    chain: [2, 5]
+    max_propagation_delay: 15.0 # ms
+    max_delay: 15.0 # ms
+
+# function definitions
+function_types: 
+  # DU - All
+  - type: 2 # 0.4
+    attributes: {
+      "min_process_delay": 0.20, 
+      "load_ratio": 54.995,
+      "process_delay": 2.24,
+      "replicable": false,
+      "overhead_ratio": 0.0008,
+      "max_dem": 1,
+      "max_bw": 200000,
+      "process_traffic_delay": 0.0,
+      "max_delay": 1000.0,
+      "shareable": true,
+    }
+  # CU - URLLC
+  - type: 3
+    attributes: {
+      "min_process_delay": 0.20, 
+      "load_ratio": 3.235,
+      "process_delay": 1.4,
+      "replicable": false,
+      "overhead_ratio": 0.008,
+      "max_dem": 5,
+      "max_bw": 200000,
+      "process_traffic_delay": 0.0,
+      "max_delay": 1000.0,
+      "shareable": true,
+    }
+  # CU - eMBB
+  - type: 4
+    attributes: {
+      "min_process_delay": 0.20, 
+      "load_ratio": 3.235,
+      "process_delay": 1.4,
+      "replicable": false,
+      "overhead_ratio": 0.008,
+      "max_dem": 5,
+      "max_bw": 200000,
+      "process_traffic_delay": 0.0,
+      "max_delay": 1000.0,
+      "shareable": true,
+    }
+  # CU - mMTC
+  - type: 5
+    attributes: {
+      "min_process_delay": 0.20, 
+      "load_ratio": 3.235,
+      "process_delay": 1.4,
+      "replicable": false,
+      "overhead_ratio": 0.008,
+      "max_dem": 5,
+      "max_bw": 200000,
+      "process_traffic_delay": 0.0,
+      "max_delay": 1000.0,
+      "shareable": true,
+    }
+# traffic flow definitions
+traffic_flows:
+  - demands: [2.0]
+    services: [3]
+    service_length: [0]
+    src: '15'
+    dst: '2'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '11'
+    dst: '2'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '16'
+    dst: '2'
+  - demands: [20000.0]
+    services: [2]
+    service_length: [0]
+    src: '10'
+    dst: '1'
+  - demands: [20000.0]
+    services: [2]
+    service_length: [0]
+    src: '15'
+    dst: '3'
+  - demands: [20000.0]
+    services: [2]
+    service_length: [0]
+    src: '16'
+    dst: '1'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '16'
+    dst: '1'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '14'
+    dst: '1'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '10'
+    dst: '3'
+  - demands: [1.0]
+    services: [3]
+    service_length: [0]
+    src: '11'
+    dst: '3'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '15'
+    dst: '3'
+  - demands: [25.0]
+    services: [1]
+    service_length: [0]
+    src: '16'
+    dst: '1'
+  - demands: [25.0]
+    services: [1]
+    service_length: [0]
+    src: '11'
+    dst: '3'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '11'
+    dst: '3'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '15'
+    dst: '1'
+  - demands: [20000.0]
+    services: [2]
+    service_length: [0]
+    src: '12'
+    dst: '1'
+  - demands: [2.0]
+    services: [3]
+    service_length: [0]
+    src: '10'
+    dst: '2'
+  - demands: [20000.0]
+    services: [2]
+    service_length: [0]
+    src: '10'
+    dst: '1'
+  - demands: [1.0]
+    services: [3]
+    service_length: [0]
+    src: '16'
+    dst: '2'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '11'
+    dst: '1'
+  - demands: [20000.0]
+    services: [2]
+    service_length: [0]
+    src: '16'
+    dst: '1'
+  - demands: [25.0]
+    services: [1]
+    service_length: [0]
+    src: '9'
+    dst: '3'
+  - demands: [2.0]
+    services: [3]
+    service_length: [0]
+    src: '16'
+    dst: '2'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '11'
+    dst: '1'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '16'
+    dst: '2'
+  - demands: [1.0]
+    services: [3]
+    service_length: [0]
+    src: '13'
+    dst: '1'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '12'
+    dst: '3'
+  - demands: [20000.0]
+    services: [2]
+    service_length: [0]
+    src: '11'
+    dst: '3'
+  - demands: [1.0]
+    services: [3]
+    service_length: [0]
+    src: '12'
+    dst: '3'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '11'
+    dst: '1'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '11'
+    dst: '2'
+  - demands: [1.0]
+    services: [3]
+    service_length: [0]
+    src: '10'
+    dst: '2'
+  - demands: [1.0]
+    services: [3]
+    service_length: [0]
+    src: '14'
+    dst: '1'
+  - demands: [10000.0]
+    services: [2]
+    service_length: [0]
+    src: '14'
+    dst: '1'
+  - demands: [25.0]
+    services: [1]
+    service_length: [0]
+    src: '9'
+    dst: '2'
+  - demands: [1.0]
+    services: [3]
+    service_length: [0]
+    src: '13'
+    dst: '2'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '13'
+    dst: '3'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '15'
+    dst: '1'
+  - demands: [1.0]
+    services: [3]
+    service_length: [0]
+    src: '13'
+    dst: '2'
+  - demands: [100.0]
+    services: [1]
+    service_length: [0]
+    src: '15'
+    dst: '2'

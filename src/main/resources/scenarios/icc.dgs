@@ -1,0 +1,84 @@
+DGS004
+test 0 0
+
+# L0 Core
+an  1 x:10.500 y:52.200 node_type:3 server_capacity:1250000
+an  2 x:10.475 y:52.300 node_type:3 server_capacity:1250000
+an  3 x:10.525 y:52.300 node_type:3 server_capacity:1250000
+# L1
+an  4 x:10.400 y:52.400 node_type:2 server_capacity:1200000
+an  5 x:10.450 y:52.400 node_type:2 server_capacity:1200000
+an  6 x:10.500 y:52.400 node_type:2 server_capacity:1200000
+an  7 x:10.550 y:52.400 node_type:2 server_capacity:1200000
+an  8 x:10.600 y:52.400 node_type:2 server_capacity:1200000
+# L2 Edge
+an  9 x:10.325 y:52.500 node_type:1 server_capacity:1150000
+an 10 x:10.375 y:52.500 node_type:1 server_capacity:1150000
+an 11 x:10.425 y:52.500 node_type:1 server_capacity:1150000
+an 12 x:10.475 y:52.500 node_type:1 server_capacity:1150000
+an 13 x:10.525 y:52.500 node_type:1 server_capacity:1150000
+an 14 x:10.575 y:52.500 node_type:1 server_capacity:1150000
+an 15 x:10.625 y:52.500 node_type:1 server_capacity:1150000
+an 16 x:10.675 y:52.500 node_type:1 server_capacity:1150000
+
+
+ae n1n2   1 > 2 delay:0.0025 capacity:80000
+ae n2n1   2 > 1 delay:0.0025 capacity:80000
+ae n1n3   1 > 3 delay:0.0025 capacity:80000
+ae n3n1   3 > 1 delay:0.0025 capacity:80000
+ae n2n3   2 > 3 delay:0.0025 capacity:80000
+ae n3n2   3 > 2 delay:0.0025 capacity:80000
+
+ae n2n4   2 > 4 delay:0.0025 capacity:40000
+ae n4n2   4 > 2 delay:0.0025 capacity:40000
+ae n2n5   2 > 5 delay:0.0025 capacity:40000 
+ae n5n2   5 > 2 delay:0.0025 capacity:40000 
+ae n2n6   2 > 6 delay:0.0025 capacity:40000
+ae n6n2   6 > 2 delay:0.0025 capacity:40000
+ae n2n7   2 > 7 delay:0.0025 capacity:40000
+ae n7n2   7 > 2 delay:0.0025 capacity:40000
+ae n2n8   2 > 8 delay:0.0025 capacity:40000
+ae n8n2   8 > 2 delay:0.0025 capacity:40000
+ae n3n4   3 > 4 delay:0.0025 capacity:40000
+ae n4n3   4 > 3 delay:0.0025 capacity:40000
+ae n3n5   3 > 5 delay:0.0025 capacity:40000
+ae n5n3   5 > 3 delay:0.0025 capacity:40000
+ae n3n6   3 > 6 delay:0.0025 capacity:40000
+ae n6n3   6 > 3 delay:0.0025 capacity:40000
+ae n3n7   3 > 7 delay:0.0025 capacity:40000
+ae n7n3   7 > 3 delay:0.0025 capacity:40000
+ae n3n8   3 > 8 delay:0.0025 capacity:40000
+ae n8n3   8 > 3 delay:0.0025 capacity:40000
+
+ae n4n9   4 > 9 delay:0.0025 capacity:60000
+ae n9n4   9 > 4 delay:0.0025 capacity:60000
+ae n4n10 4 > 10 delay:0.0025 capacity:60000
+ae n10n4 10 > 4 delay:0.0025 capacity:60000
+ae n5n9   5 > 9 delay:0.0025 capacity:60000
+ae n9n5   9 > 5 delay:0.0025 capacity:60000
+ae n5n10 5 > 10 delay:0.0025 capacity:60000
+ae n10n5 10 > 5 delay:0.0025 capacity:60000
+ae n5n11 5 > 11 delay:0.0025 capacity:60000
+ae n11n5 11 > 5 delay:0.0025 capacity:60000
+ae n6n11 6 > 11 delay:0.0025 capacity:60000
+ae n11n6 11 > 6 delay:0.0025 capacity:60000
+ae n6n12 6 > 12 delay:0.0025 capacity:60000
+ae n12n6 12 > 6 delay:0.0025 capacity:60000
+ae n7n12 7 > 12 delay:0.0025 capacity:60000
+ae n12n7 12 > 7 delay:0.0025 capacity:60000
+ae n5n13 5 > 13 delay:0.0025 capacity:60000
+ae n13n5 13 > 5 delay:0.0025 capacity:60000
+ae n6n13 6 > 13 delay:0.0025 capacity:60000
+ae n13n6 13 > 6 delay:0.0025 capacity:60000
+ae n7n14 7 > 14 delay:0.0025 capacity:60000
+ae n14n7 14 > 7 delay:0.0025 capacity:60000
+ae n8n14 8 > 14 delay:0.0025 capacity:60000
+ae n14n8 14 > 8 delay:0.0025 capacity:60000
+ae n7n15 7 > 15 delay:0.0025 capacity:60000
+ae n15n7 15 > 7 delay:0.0025 capacity:60000
+ae n8n15 8 > 15 delay:0.0025 capacity:60000
+ae n15n8 15 > 8 delay:0.0025 capacity:60000
+ae n6n16 6 > 16 delay:0.0025 capacity:60000
+ae n16n6 16 > 6 delay:0.0025 capacity:60000
+ae n8n16 8 > 16 delay:0.0025 capacity:60000
+ae n16n8 16 > 8 delay:0.0025 capacity:60000
