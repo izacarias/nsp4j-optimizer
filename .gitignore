@@ -121,3 +121,4 @@ _build/
 target/
 .vscode/launch.json
 .vscode/settings.json
+.gradle/*
