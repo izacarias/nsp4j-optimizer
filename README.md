@@ -38,12 +38,26 @@ Prerequisites
 
 ## Build and run (Gradle)
 
-1. Install `gurobi.jar` library in the local directory `libs`
+1. Clone the repository
+  
+  ``` shell
+  git clone https://github.com/fcarp10/nsp4j-optimizer.git
+  cd nsp4j-optimizer
+  ```
+
+2. Install `gurobi.jar` library in the local directory `libs`
   ```
   mkdir libs
   GRB_JAR=`find /opt -name gurobi.jar 2>/dev/null`
   cp $GRB_JAR ./libs
   ```
+
+3. Build and run:
+
+	```shell
+	./gradlew build
+  ./gradlew run
+	```
 
 4. By default, GUI runs in: `localhost:8082`.
 

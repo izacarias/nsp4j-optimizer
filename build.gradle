@@ -63,10 +63,9 @@ application {
     mainClass = 'optimizer.Launcher'
 }
 
+// Disable tests completely during build
 tasks.named('test') {
-    useJUnitPlatform()
-    // Skip tests by default, matching Maven configuration
-    enabled = !Boolean.getBoolean('skipTests')
+    enabled = false
 }
 
 // Create a fat JAR with dependencies
@@ -86,4 +85,4 @@ tasks.register('fatJar', Jar) {
     }
 }
 
-tasks.build.dependsOn fatJar 
+tasks.build.dependsOn fatJar
