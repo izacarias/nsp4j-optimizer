@@ -9,7 +9,7 @@ Prerequisites
 - [Gurobi optimizer](https://www.gurobi.com/)
 
 
-## Build and run
+## Build and run (Maven)
 
 1. Install `gurobi.jar` library on your local maven repository:
    
@@ -35,6 +35,15 @@ Prerequisites
 	cd target/
 	java -jar nsp4j-optimizer-${VERSION}-jar-with-dependencies.jar
 	```
+
+## Build and run (Gradle)
+
+1. Install `gurobi.jar` library in the local directory `libs`
+  ```
+  mkdir libs
+  GRB_JAR=`find /opt -name gurobi.jar 2>/dev/null`
+  cp $GRB_JAR ./libs
+  ```
 
 4. By default, GUI runs in: `localhost:8082`.
 
