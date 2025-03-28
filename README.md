@@ -14,7 +14,8 @@ Prerequisites
 1. Install `gurobi.jar` library on your local maven repository:
    
    	```shell
-	mvn install:install-file -Dfile=/usr/share/java/gurobi/gurobi.jar -DgroupId=com.gurobi -DartifactId=gurobi-optimizer -Dversion=10.0.0 -Dpackaging=jar
+  GRB_JAR=`find /opt -name gurobi.jar 2>/dev/null`
+	mvn install:install-file -Dfile=$GRB_JAR -DgroupId=com.gurobi -DartifactId=gurobi-optimizer -Dversion=21.0.1 -Dpackaging=jar
 	```
 
 

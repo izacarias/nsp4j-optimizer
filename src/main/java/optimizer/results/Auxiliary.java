@@ -15,10 +15,10 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 
-import gurobi.GRB;
-import gurobi.GRBException;
-import gurobi.GRBModel;
-import gurobi.GRBVar;
+import com.gurobi.gurobi.GRB;
+import com.gurobi.gurobi.GRBException;
+import com.gurobi.gurobi.GRBModel;
+import com.gurobi.gurobi.GRBVar;
 import optimizer.Parameters;
 import optimizer.elements.*;
 import optimizer.Manager;

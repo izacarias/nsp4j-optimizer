@@ -1,6 +1,6 @@
 package optimizer.lp;
 
-import gurobi.*;
+import com.gurobi.gurobi.*;
 import optimizer.Parameters;
 import optimizer.Manager;
 import optimizer.results.Auxiliary;

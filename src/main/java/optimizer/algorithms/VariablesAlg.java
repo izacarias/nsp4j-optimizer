@@ -8,7 +8,7 @@ import java.util.Map;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Path;
 
-import gurobi.GRBModel;
+import com.gurobi.gurobi.GRBModel;
 import optimizer.Parameters;
 import optimizer.elements.*;
 import optimizer.results.Auxiliary;

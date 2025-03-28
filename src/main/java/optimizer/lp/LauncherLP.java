@@ -1,8 +1,8 @@
 package optimizer.lp;
 
-import gurobi.GRBException;
-import gurobi.GRBLinExpr;
-import gurobi.GRBModel;
+import com.gurobi.gurobi.GRBException;
+import com.gurobi.gurobi.GRBLinExpr;
+import com.gurobi.gurobi.GRBModel;
 import optimizer.Parameters;
 import optimizer.gui.ResultsGUI;
 import optimizer.gui.Scenario;

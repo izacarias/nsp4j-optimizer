@@ -3,7 +3,7 @@ package optimizer.lp;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import gurobi.*;
+import com.gurobi.gurobi.*;
 import optimizer.Parameters;
 import optimizer.elements.*;
 import optimizer.gui.Scenario;

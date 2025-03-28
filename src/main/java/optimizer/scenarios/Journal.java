@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gurobi.GRBException;
-import gurobi.GRBModel;
+import com.gurobi.gurobi.GRBException;
+import com.gurobi.gurobi.GRBModel;
 import optimizer.Manager;
 import optimizer.Parameters;
 import optimizer.algorithms.LauncherAlg;
